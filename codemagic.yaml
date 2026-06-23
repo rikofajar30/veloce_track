@@ -1,0 +1,42 @@
+workflows:
+  veloce-track-dual-build:
+    name: Veloce Track Cloud Build (Android & iOS)
+    max_build_duration: 60
+    instance_type: mac_mini_m1
+    environment:
+      flutter: stable
+      xcode: latest
+      cocoapods: default
+    triggering:
+      events:
+        - push
+      branches:
+        - main
+    scripts:
+      # 1. Setup konfigurasi dasar Android
+      - name: Set up local.properties
+        run: echo "flutter.sdk=$FLUTTER_ROOT" > android/local.properties
+
+      # 2. Ambil semua dependensi Flutter (package provider, geolocator, dll)
+      - name: Get Flutter Packages
+        run: flutter pub get
+
+      # 3. Setup dependensi iOS (CocoaPods)
+      - name: Install iOS Pods
+        run: |
+          cd ios
+          pod install
+
+      # 4. Build APK Android (Mode Debug agar cepat)
+      - name: Build Flutter APK (Android)
+        run: flutter build apk --debug
+
+      # 5. Build IPA iOS (Mode Simulator / Unsigned agar tidak terkunci Apple Developer Paid)
+      - name: Build Flutter IPA (iOS)
+        run: flutter build ios --debug --no-codesign
+
+    artifacts:
+      # Mengambil hasil build APK Android
+      - build/app/outputs/flutter-apk/**.apk
+      # Mengambil hasil build aplikasi iOS (dalam folder Build)
+      - build/ios/iphoneos/*.app
