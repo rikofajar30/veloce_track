@@ -1,0 +1,45 @@
+name: Flutter Cloud Build APK
+
+# Robot akan berjalan otomatis setiap kali kamu mengunggah kode ke branch 'main'
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. Mengambil kode sumber dari repositori GitHub
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    # 2. Menyiapkan lingkungan Java (diperlukan untuk Android)
+    - name: Set up Java Development Kit
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'zulu'
+        java-version: '17'
+
+    # 3. Menyiapkan SDK Flutter versi stabil terbaru
+    - name: Set up Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        channel: 'stable'
+
+    # 4. Mengunduh semua package/dependensi (provider, geolocator, dll)
+    - name: Install Dependencies
+      run: flutter pub get
+
+    # 5. Memulai proses kompilasi APK secara otomatis di Cloud
+    - name: Build Debug APK
+      run: flutter build apk --debug
+
+    # 6. Mengunggah file APK hasil build agar bisa kamu unduh
+    - name: Upload APK Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: veloce-track-apk
+        path: build/app/outputs/flutter-apk/app-debug.apk
