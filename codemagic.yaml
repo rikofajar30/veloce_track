@@ -10,23 +10,25 @@ workflows:
     triggering:
       events:
         - push
+      branches:
+        - main
     scripts:
       - name: Set up local.properties
-        run: echo "flutter.sdk=$FLUTTER_ROOT" > android/local.properties
+        script: echo "flutter.sdk=$FLUTTER_ROOT" > android/local.properties
 
       - name: Get Flutter Packages
-        run: flutter pub get
+        script: flutter pub get
 
       - name: Install iOS Pods
-        run: |
+        script: |
           cd ios
           pod install
 
       - name: Build Flutter APK (Android)
-        run: flutter build apk --debug
+        script: flutter build apk --debug
 
       - name: Build Flutter IPA (iOS)
-        run: flutter build ios --debug --no-codesign
+        script: flutter build ios --debug --no-codesign
 
     artifacts:
       - build/app/outputs/flutter-apk/**.apk
