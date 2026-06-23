@@ -1,33 +1,46 @@
-workflows:
-  veloce-track-dual-build:
-    name: Veloce Track Cloud Build (Android & iOS)
-    max_build_duration: 60
-    instance_type: mac_mini_m1
-    environment:
-      flutter: stable
-      xcode: latest
-      cocoapods: default
-      java: 17  
-    scripts:
-      - name: Set up local.properties
-        script: echo "flutter.sdk=$FLUTTER_ROOT" > android/local.properties
+plugins {
+    id("com.android.application")
+    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
+    id("dev.flutter.flutter-gradle-plugin")
+}
 
-      - name: Get Flutter Packages
-        script: |
-          flutter clean
-          flutter pub get
-          
-      - name: Install iOS Pods
-        script: |
-          cd ios
-          pod install
+android {
+    namespace = "com.example.veloce_track"
+    compileSdk = flutter.compileSdkVersion
+    ndkVersion = flutter.ndkVersion
 
-      - name: Build Flutter APK (Android)
-        script: flutter build apk --debug
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
 
-      - name: Build Flutter IPA (iOS)
-        script: flutter build ios --debug --no-codesign
+    defaultConfig {
+        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
+        applicationId = "com.example.veloce_track"
+        // You can update the following values to match your application needs.
+        // For more information, see: https://flutter.dev/to/review-gradle-config.
+        minSdk = flutter.minSdkVersion
+        targetSdk = flutter.targetSdkVersion
+        versionCode = flutter.versionCode
+        versionName = flutter.versionName
+        multiDexEnabled = true
+    }
 
-    artifacts:
-      - build/app/outputs/flutter-apk/**.apk
-      - build/ios/iphoneos/*.app
+    buildTypes {
+        release {
+            // TODO: Add your own signing config for the release build.
+            // Signing with the debug keys for now, so `flutter run --release` works.
+            signingConfig = signingConfigs.getByName("debug")
+        }
+    }
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
+    }
+}
+
+flutter {
+    source = "../.."
+}
