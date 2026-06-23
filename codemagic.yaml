@@ -7,13 +7,16 @@ workflows:
       flutter: stable
       xcode: latest
       cocoapods: default
+      java: 17  # <-- Tambahkan baris ini untuk mengunci versi Java di server
     scripts:
       - name: Set up local.properties
         script: echo "flutter.sdk=$FLUTTER_ROOT" > android/local.properties
 
       - name: Get Flutter Packages
-        script: flutter pub get
-
+        script: |
+          flutter clean
+          flutter pub get
+          
       - name: Install iOS Pods
         script: |
           cd ios
