@@ -41,3 +41,16 @@ kotlin {
 flutter {
     source = "../.."
 }
+
+// Paksa semua plugin/sub-library (termasuk firebase_auth) menggunakan SDK 36
+subprojects {
+    afterEvaluate {
+        if (hasProperty("android")) {
+            extensions.findByName("android")?.let { android ->
+                (android as com.android.build.gradle.BaseExtension).apply {
+                    compileSdkVersion(36)
+                }
+            }
+        }
+    }
+}
