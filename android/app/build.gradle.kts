@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.example.veloce_track"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 36 // <-- Ganti angka 34 kemarin menjadi 36
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
@@ -15,12 +15,9 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId = "com.example.veloce_track"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
+        minSdk = flutter.minSdkVersion // Tetap biarkan 21 agar HP Infinix lama bisa instal
+        targetSdk = 36 // <-- Ganti angka 34 kemarin menjadi 36 juga
         versionCode = flutter.versionCode
         versionName = flutter.versionName
         multiDexEnabled = true
